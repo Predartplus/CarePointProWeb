@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { ReactTags } from 'react-tag-autocomplete';
-import LogoIcon from '../images/carepointpro/main__logo.png';
+import Multiselect from 'multiselect-react-dropdown';
+import heroImage from '../images/carepointpro/landingpage/doctor-nurses-special-equipment.png';
 import iconHealthcare from '../images/carepointpro/landingpage/icon-healthcare.svg';
 import iconDentist from '../images/carepointpro/landingpage/icon-dentist.svg';
 import iconObGyn from '../images/carepointpro/landingpage/icon-gyn.svg';
@@ -10,6 +10,7 @@ import iconEye from '../images/carepointpro/landingpage/icon-eye.svg';
 import mydoctorImage from '../images/carepointpro/landingpage/mydoctor-app.png';
 import doctorapp from '../images/carepointpro/landingpage/doctor-app.jpeg';
 import Carousel from 'better-react-carousel';
+import { useForm } from 'react-hook-form';
 
 const countries = [
   'Afghanistan',
@@ -229,40 +230,156 @@ const suggestions = countries.map((name, index) => ({
 export { countries, suggestions };
 
 const LandingPage = () => {
-  const [selected, setSelected] = useState([]);
-  const onAdd = useCallback(
-    (newTag) => {
-      setSelected([...selected, newTag]);
-    },
-    [selected],
-  );
+  // HERO AUTOCOMPLETE
+  const state = {
+    options: [
+      { name: 'Option 1️', id: 1 },
+      { name: 'Vevet 2', id: 2 },
+      { name: 'Option 1️', id: 1 },
+      { name: 'Vevet 2', id: 2 },
+      { name: 'Option 1️', id: 1 },
+      { name: 'Vevet 2', id: 2 },
+      { name: 'Option 1️', id: 1 },
+      { name: 'Vevet 2', id: 2 },
+      { name: 'Option 1️', id: 1 },
+      { name: 'Vevet 2', id: 2 },
+      { name: 'Option 1️', id: 1 },
+      { name: 'Vevet 2', id: 2 },
+    ],
+  };
 
-  const onDelete = useCallback(
-    (tagIndex) => {
-      setSelected(selected.filter((_, i) => i !== tagIndex));
-    },
-    [selected],
-  );
+  // HERO FORM
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   return (
     <>
-      <div className="flex flex-col p-4 bg-[#4885c8]">
+      <div className="flex flex-col p-4 pb-0 bg-[#4885c8]">
         <div className="container">
-          <div className="max-w-screen-xl mx-auto p-4">
-            <div className="flex p-4 cpp__heroAutocomplete">
-              {/* <ReactTags
-                labelText="Select countries"
-                selected={selected}
-                suggestions={suggestions}
-                onAdd={onAdd}
-                onDelete={onDelete}
-                noOptionsText="No matching countries"
-              /> */}
+          <div className="max-w-screen-xl mx-auto p-4 pb-0">
+            <div className="flex cpp__heroAutocomplete">
+              <Multiselect
+                className="w-full"
+                closeIcon="cancel"
+                placeholder="Search disease, doctor, treatment, hospital, medicines etc...."
+                options={state.options} // Options to display in the dropdown
+                //selectedValues={} // Preselected value to persist in dropdown
+                //onSelect={} // Function will trigger on select event
+                //onRemove={} // Function will trigger on remove event
+                displayValue="name" // Property name to display in the dropdown options
+              />
             </div>
-            <div className="d-flex">
-              <h1 className="text-white text-4xl">
-                Book an in-Network near you
-              </h1>
+            <div className="flex mt-7">
+              <div className="w-9/12">
+                <h1 className="text-white text-5xl font-extrabold">
+                  Book an in-Network General Doctor near you
+                </h1>
+                <div className="flex mt-10">
+                  <div className="w-2/4">
+                    <div id="stats" className="text-black">
+                      <div className="">
+                        <dl className="flex justify-start">
+                          <div className="flex max-w-xs flex-col gap-y-2 border-r pr-4">
+                            <dt className="text-base leading-7 text-gray-600 font-bold">
+                              DOCTORS
+                            </dt>
+                            <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                              <span className="animate-[counter_3s_ease-out_forwards] tabular-nums [counter-set:_num_var(--num-transactions)] before:content-[counter(num)] font-extrabold">
+                                {' '}
+                                <span className="sr-only">400</span>+
+                              </span>
+                            </dd>
+                          </div>
+                          <div className="mx-auto flex max-w-xs flex-col gap-y-2 border-r px-4">
+                            <dt className="text-base leading-7 text-gray-600 font-bold">
+                              DISEASES
+                            </dt>
+                            <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                              <span className="animate-[counter_3s_ease-out_forwards] tabular-nums [counter-set:_num_var(--num-assets)] before:content-[counter(num)] font-extrabold">
+                                {' '}
+                                <span className="sr-only">50</span>+
+                              </span>
+                            </dd>
+                          </div>
+                          <div className="mx-auto flex max-w-xs flex-col gap-y-2 px-4">
+                            <dt className="text-base leading-7 text-gray-600 font-bold">
+                              CITIES
+                            </dt>
+                            <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                              <span className="animate-[counter_3s_ease-out_forwards] tabular-nums [counter-set:_num_var(--num-users)] before:content-[counter(num)] before:left-[calc(0.4em * var(--n, 1))] font-extrabold">
+                                <span className="sr-only">45</span>+
+                              </span>
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <h3 className="text-black font-extrabold mt-5">
+                      Book Appointments With Our Expert Doctors Near You{' '}
+                    </h3>
+                    <ul className="mt-5 text-white">
+                      <li className="my-5">
+                        + Get consultation for 50+ diseases across India
+                      </li>
+                      <li className="my-5">
+                        + In-person and online consultation with experienced
+                        doctors
+                      </li>
+                      <li className="my-5">
+                        + Extensive medical assistance throughout your treatment
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="w-2/4">
+                    <img src={heroImage} alt="Book an in-Network General Doctor near you" />
+                  </div>
+                </div>
+              </div>
+              <div className="w-1/4">
+                <div className="cpp__bookappoinment bg-white rounded-xl p-5">
+                  <h2 className="text-center text-black mb-3 font-bold">Book Free Consultation</h2>
+                  <form onSubmit={handleSubmit((data) => console.log(data))}>
+                    <div className="mb-4">
+                      <input placeholder="Name" className="border rounded py-1 px-2 text-black w-full" {...register('Name', {required: true, pattern: /^[A-Za-z]+$/i})} />
+                      {errors.Name && <p className="text-red-600">Name is required.</p>}
+                    </div>
+                    <div className="mb-4">
+                      <input  placeholder="WhatsApp Number" className="border rounded py-1 px-2 text-black w-full" {...register('WhatsappNumber', { required: true, pattern: /^[6789][0-9]{9}/ })} />
+                      {errors.WhatsappNumber && <p className="text-red-600">Whatsapp Number is required.</p>}
+                    </div>
+                    <div className="mb-4">
+                      <input placeholder="Email" className="border rounded py-1 px-2 text-black w-full" {...register('Email', {required: true, pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i })} />
+                      {errors.Email && <p className="text-red-600">Please enter valid email.</p>}
+                    </div>
+                    <div className="mb-4">
+                      <select className="border rounded py-1 px-2 text-black w-full" {...register("City", {required: true})}>
+                        <option value="">City</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Coimbatore">Coimbatore</option>
+                        <option value="Madurai">Madurai</option>
+                        <option value="Salem">Salem</option>
+                        <option value="Trichy">Trichy</option>
+                      </select>
+                      {errors.City && <p className="text-red-600">Please enter valid city.</p>}
+                    </div>
+                    <div className="mb-4">
+                      <select className="border rounded py-1 px-2 text-black w-full" {...register("TypeOfDoctor", {required: true})}>
+                        <option value="">Type Of Doctor</option>
+                        <option value="General">General Medicine</option>
+                        <option value="Gynaecologist">Gynaecologist</option>
+                        <option value="Neurologist">Neurologist</option>
+                        <option value="Orthopedics">Orthopedics</option>
+                        <option value="Diabetes">Diabetes</option>
+                      </select>
+                      {errors.TypeOfDoctor && <p className="text-red-600">Please enter valid city.</p>}
+                    </div>
+                    <input className="bg-gradient-to-b from-[#004A99] to-[#007BFF] hover:from-[#007BFF] hover:to-[#004A99] text-white transition duration-150 ease-out hover:ease-in rounded px-5 py-2 mt-2 w-full text-center" type="submit" />
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>

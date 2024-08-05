@@ -46,7 +46,26 @@ function App() {
             </>
           }
           />
+        <Route
+          path="/signin"
+          element={
+            <>
+              <PageTitle title="Signin | CarePoint Pro" />
+              <SignIn />
+            </>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <>
+              <PageTitle title="Signup | CarePoint Pro" />
+              <SignUp />
+            </>
+          }
+        />
       </Routes>
+      
     </LandingPageLayout>
     // <DefaultLayout>
     //   <Routes>
