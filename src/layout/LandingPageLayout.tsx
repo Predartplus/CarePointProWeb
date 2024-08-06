@@ -11,7 +11,7 @@ const LandingPageLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           <header className="bg-[#deeeff]">
             <div className="container mx-auto">
               <nav className="border-gray-200 dark:bg-gray-900">
-                <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+                <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-0 py-4">
                   <Link
                     className="flex items-center space-x-3 rtl:space-x-reverse"
                     to="/"
@@ -95,9 +95,9 @@ const LandingPageLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           <main>{children}</main>
           <footer className="bg-[#deeeff]">
             <div className="container">
-              <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+              <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
                 <div className="rounded-lg dark:bg-gray-900 w-full">
-                  <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+                  <div className="w-full max-w-screen-xl mx-auto py-4 md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                       <Link
                       className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"

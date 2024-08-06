@@ -257,9 +257,9 @@ const LandingPage = () => {
 
   return (
     <>
-      <div className="flex flex-col p-4 pb-0 bg-[#4885c8]">
+      <div className="flex flex-col pb-0 bg-[#4885c8]">
         <div className="container">
-          <div className="max-w-screen-xl mx-auto p-4 pb-0">
+          <div className="max-w-screen-xl mx-auto px-0 py-4 pb-0">
             <div className="flex cpp__heroAutocomplete">
               <Multiselect
                 className="w-full"
@@ -272,13 +272,13 @@ const LandingPage = () => {
                 displayValue="name" // Property name to display in the dropdown options
               />
             </div>
-            <div className="flex mt-7">
-              <div className="w-9/12">
+            <div className="flex flex-col gap-0 md:gap-10 md:flex-row mt-7">
+              <div className="w-full xl:w-9/12">
                 <h1 className="text-white text-5xl font-extrabold">
                   Book an in-Network General Doctor near you
                 </h1>
-                <div className="flex mt-10">
-                  <div className="w-2/4">
+                <div className="flex flex-col xl:flex-row mt-10">
+                  <div className="w-full xl:w-2/4">
                     <div id="stats" className="text-black">
                       <div className="">
                         <dl className="flex justify-start">
@@ -333,13 +333,13 @@ const LandingPage = () => {
                       </li>
                     </ul>
                   </div>
-                  <div className="w-2/4">
+                  <div className="block md:hidden xl:block w-full xl:w-2/4">
                     <img src={heroImage} alt="Book an in-Network General Doctor near you" />
                   </div>
                 </div>
               </div>
-              <div className="w-1/4">
-                <div className="cpp__bookappoinment bg-white rounded-xl p-5">
+              <div className="w-full xl:w-1/4">
+                <div className="cpp__bookappoinment bg-white rounded-xl p-5 mb-5 md:mb-0">
                   <h2 className="text-center text-black mb-3 font-bold">Book Free Consultation</h2>
                   <form onSubmit={handleSubmit((data) => console.log(data))}>
                     <div className="mb-4">
@@ -393,28 +393,28 @@ const LandingPage = () => {
             <p className="text-black text-center">
               Get care from doctors across +100 specialties
             </p>
-            <div className="flex justify-between w-full mt-10">
-              <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-wrap justify-between w-full mt-10">
+              <div className="flex flex-col justify-center items-center w-6/12 md:w-auto">
                 <img className="h-20" src={iconHealthcare} alt="" />
                 <h3 className="mt-2">Primary Care</h3>
               </div>
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col justify-center items-center w-6/12 md:w-auto">
                 <img className="h-20" src={iconDentist} alt="" />
                 <h3 className="mt-2">Dentist</h3>
               </div>
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col justify-center items-center w-6/12 md:w-auto">
                 <img className="h-20" src={iconObGyn} alt="" />
                 <h3 className="mt-2">OB-GYN</h3>
               </div>
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col justify-center items-center w-6/12 md:w-auto">
                 <img className="h-20" src={iconDerm} alt="" />
                 <h3 className="mt-2">Dermatologists</h3>
               </div>
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col justify-center items-center w-6/12 md:w-auto">
                 <img className="h-20" src={iconPysc} alt="" />
                 <h3 className="mt-2">Psychiatrists</h3>
               </div>
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col justify-center items-center w-6/12 md:w-auto">
                 <img className="h-20" src={iconEye} alt="" />
                 <h3 className="mt-2">Eye Doctors</h3>
               </div>
@@ -428,7 +428,7 @@ const LandingPage = () => {
             <h2 className="text-black text-center text-4xl">
               What is CarePoint Pro ?
             </h2>
-            <div className="flex justify-between w-full mt-10">
+            <div className="flex justify-between flex-col md:flex-row gap-5 w-full mt-10">
               <div className="flex flex-col justify-center items-center px-4 text-center">
                 <h3 className="text-black text-xl">
                   Find and compare top local doctors
@@ -461,11 +461,11 @@ const LandingPage = () => {
         </div>
       </div>
       <div
-        className="flex items-center justify-center h-screen mx-auto bg-no-repeat bg-cover bg-center p-20"
+        className="flex items-center justify-center h-screen mx-auto bg-no-repeat bg-cover bg-center p-0 md:p-20"
         style={{ backgroundImage: `url(${doctorapp})` }}
       >
         <div className="container">
-          <div className="max-w-screen-xl flex flex-col items-start mx-auto p-4">
+          <div className="max-w-screen-xl flex flex-col items-start mx-auto">
             <h2 className="text-white text-4xl">Patient Resources</h2>
             <p className="text-white mt-3 mb-10 w-3/6">
               Access your personal health records, view lab results, and
@@ -583,8 +583,8 @@ const LandingPage = () => {
       </div>
       <div className="flex py-10 bg-[#ededed]">
         <div className="container">
-          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-            <div className="grid grid-flow-col gap-3 items-center">
+          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
+            <div className="grid grid-flow-row md:grid-flow-col gap-3 items-center">
               <div className="col-span-6">
                 <h2 className="text-black text-4xl mb-5">
                   Download the MYDOCTOR App
@@ -594,7 +594,7 @@ const LandingPage = () => {
                   MYDOCTOR app. Connect with doctors online, available 24/7,
                   from the comfort of your home.
                 </p>
-                <div className="items-center justify-start space-y-4 sm:flex sm:space-y-0 sm:space-x-4 rtl:space-x-reverse mt-10">
+                <div className="items-center justify-start gap-5 flex mt-10">
                   <a
                     href="#"
                     className="w-full sm:w-auto border bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-grey rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
