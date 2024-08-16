@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../js/axiosInstance';
 
-const SignIn: React.FC = () => {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const SignIn: React.FC = () => {
+  const navigate = useNavigate();
+  const [Username, setUsername] = useState('');
+  const [Password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await axiosInstance.post('/Login', { email, password });
+      const response = await axiosInstance.post('/Login', { Username, Password });
       console.log('Login successful:', response.data);
+      navigate('/dashboard');
       // Handle successful login, e.g., save token, redirect, etc.
     } catch (error) {
       console.error('Error logging in:', error);
@@ -23,7 +25,7 @@ const SignIn: React.FC = () => {
   return (
     <>
       <div className="container">
-        <div className="max-w-screen-xl mx-auto">
+        <div className="max-w-screen-xl mx-auto py-4">
           <div className="bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex flex-wrap items-center">
               <div className="hidden w-full xl:block xl:w-1/2">
@@ -172,7 +174,7 @@ const SignIn: React.FC = () => {
                       </label>
                       <div className="relative">
                         <input
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => setUsername(e.target.value)}
                           type="text"
                           placeholder="Enter your email"
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"

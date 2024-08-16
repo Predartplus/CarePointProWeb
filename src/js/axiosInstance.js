@@ -3,6 +3,10 @@ import { API_URL } from './config';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
+  auth: {
+    username: '11187259',
+    password: '60-dayfreetrial'
+  },
   headers: {
     'Content-Type': 'application/json',
   },
