@@ -5,21 +5,38 @@ import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
 import { useForm, Controller } from 'react-hook-form';
 import flatpickr from 'flatpickr';
+import axiosInstance from '../../js/axiosInstance';
 
 const SignUp: React.FC = () => {
   const {
     control,
+    reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  // radio button 
-  // const [selectedOption, setSelectedOption] = useState('');
+  interface GenderOption {
+    code: string;
+    appLOVID: string;
+    name: string;
+  }
+  interface BloodGroupOption {
+    code: string;
+    appLOVID: string;
+    name: string;
+  }
+  interface MaritalStatusOption {
+    code: string;
+    appLOVID: string;
+    name: string;
+  }
 
-  // const handleMaritialStatusChange = (event) => {
-  //     setSelectedOption(event.target.value);
-  // };
+  const [gender, setGender] = useState<GenderOption[]>([]);
+  const [bloodGroup, setBloodGroup] = useState<BloodGroupOption[]>([]);
+  const [maritalStatus, setMaritalStatus] = useState<MaritalStatusOption[]>([]);
+  const [message, setMessage] = useState(''); // For success/error messages
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   useEffect(() => {
     // Init flatpickr
@@ -33,12 +50,44 @@ const SignUp: React.FC = () => {
       nextArrow:
         '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
     });
+
+    // call masters
+    const fetchData = async (type: string, setter: (data: any) => void) => {
+      try {
+        const response = await axiosInstance.get(`/AppLOV?type=${type}`);
+        setter(response.data);
+        console.log('Masters data', response.data);
+      } catch (err) {
+        console.log('Master fetch API Error', err);
+      }
+    };
+
+    // Call masters
+    fetchData('Gender', setGender);
+    fetchData('BloodGroup', setBloodGroup);
+    fetchData('MaritalStatus', setMaritalStatus);
   }, []);
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      const response = await axiosInstance.post('/Patient', data); // Replace with your API endpoint
+      //console.log('Form submission success:', response.data);
+      setMessage('Registration submitted successfully!');
+      reset();
+      // Optionally handle success, e.g., show a success message or redirect
+    } catch (error) {
+      //console.error('Form submission error:', error);
+      setMessage('Error submitting form: ' + error.message);
+      // Optionally handle the error, e.g., show an error message
+    } finally {
+      setIsSubmitting(false); // Reset submitting state
+    }
+  };
 
   return (
     <>
       <Breadcrumb pageName="Sign Up" />
-
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
@@ -51,7 +100,6 @@ const SignUp: React.FC = () => {
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit
                 suspendisse.
               </p>
-
               <span className="mt-15 inline-block">
                 <svg
                   width="350"
@@ -183,124 +231,204 @@ const SignUp: React.FC = () => {
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Sign Up to TailAdmin
               </h2>
-
-              <form onSubmit={handleSubmit((data) => console.log(data))}>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
-                  <input placeholder='Patient Name' className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary' {...register('patientName', { required: true })} />
-                  {errors.patientName && <p className="text-sm text-red-800 mt-1 text-right">Patient name is required.</p>}
+                  <input
+                    placeholder="Patient Name"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    {...register('patientName', { required: true })}
+                  />
+                  {errors.patientName && (
+                    <p className="text-sm text-red-800 mt-1 text-right">
+                      Patient name is required.
+                    </p>
+                  )}
                 </div>
                 <div className="mb-4">
                   <Controller
-                    name="date"
+                    name="patientDateOfBirth"
                     control={control}
                     rules={{ required: 'Patient Date of Birth is required' }}
-                    defaultValue={null}
-                    render={({}) => (
+                    render={({ field }) => (
                       <div>
-                          <input
-                            className="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                            placeholder="Patient Date Of Birth"
-                            data-class="flatpickr-right"
-                          />
-                          {errors.date && <p className="text-sm text-red-800 mt-1 text-right">Patient Date of Birth is required</p>}
+                        <input
+                          className="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                          placeholder="Patient Date Of Birth"
+                          data-class="flatpickr-right"
+                          value={
+                            field.value
+                              ? new Date(field.value).toLocaleDateString(
+                                  'en-US',
+                                )
+                              : ''
+                          }
+                          readOnly
+                          ref={(element) => {
+                            if (element) {
+                              flatpickr(element, {
+                                onChange: (selectedDates) => {
+                                  field.onChange(selectedDates[0]); // Update field value on date change
+                                },
+                                dateFormat: 'M j, Y', // Ensures proper format display in input
+                                defaultDate: field.value || null, // Sets the initial date if available
+                              });
+                            }
+                          }}
+                        />
+                        {errors.patientDateOfBirth && (
+                          <p className="text-sm text-red-800 mt-1 text-right">
+                            {errors.patientDateOfBirth.message}
+                          </p>
+                        )}
                       </div>
-                  )}
+                    )}
                   />
                 </div>
                 <div className="mb-4">
-                  <div className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary flex gap-5'>
-                    <div>
-                      <label className="flex gap-2">
-                        <input
-                          type="radio"
-                          value="M"
-                          {...register('option', { required: true })}
-                        />
-                        Male
-                      </label>
-                    </div>
-                    <div>
-                      <label className="flex gap-2">
-                        <input
-                          type="radio"
-                          value="F"
-                          {...register('option', { required: true })}
-                        />
-                        Female
-                      </label>
-                    </div>
-                    <div>
-                    <label className="flex gap-2">
-                      <input
-                        type="radio"
-                        value="T"
-                        {...register('option', { required: true })}
-                      />
-                      Trans Gender
-                    </label>
-                    </div>
+                  <div className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary flex gap-5">
+                    {gender.map((option) => (
+                      <div key={option.appLOVID}>
+                        <label className="flex gap-2">
+                          <input
+                            type="radio"
+                            value={option.code}
+                            {...register('patientGender', { required: true })}
+                          />
+                          {option.name}
+                        </label>
+                      </div>
+                    ))}
                   </div>
-                  {errors.option && <p className="text-sm text-red-800 mt-1 text-right">Gender is required</p>}
+                  {errors.patientGender && (
+                    <p className="text-sm text-red-800 mt-1 text-right">
+                      Gender is required
+                    </p>
+                  )}
                 </div>
                 <div className="mb-4">
-                  <input placeholder='Patient Phone Number' className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary' {...register('patientPhoneNumber', { required: true })} />
-                  {errors.patientPhoneNumber && <p className="text-sm text-red-800 mt-1 text-right">Patient Phone Number is required.</p>}
+                  <input
+                    placeholder="Patient Phone Number"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    {...register('patientPhoneNumber', {
+                      required: 'Patient Phone Number is required',
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message:
+                          'Patient Phone number must be exactly 10 digits',
+                      },
+                    })}
+                  />
+                  {errors.patientPhoneNumber && (
+                    <p className="text-sm text-red-800 mt-1 text-right">
+                      {errors.patientPhoneNumber.message}
+                    </p>
+                  )}
                 </div>
                 <div className="mb-4">
-                  <input placeholder='Patient Email' className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary' {...register('patientEmail', { required: true })} />
-                  {errors.patientEmail && <p className="text-sm text-red-800 mt-1 text-right">Patient Email is required.</p>}
+                  <input
+                    placeholder="Patient Email"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    {...register('patientEmail', {
+                      required: 'Patient Email is required',
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: 'Please enter a valid email address',
+                      },
+                    })}
+                  />
+                  {errors.patientEmail && (
+                    <p className="text-sm text-red-800 mt-1 text-right">
+                      {errors.patientEmail.message}
+                    </p>
+                  )}
                 </div>
                 <div className="mb-4">
-                <div className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary flex gap-5'>
-                    <div>
-                      <label className="flex gap-2">
-                        <input
-                          type="radio"
-                          value="married"
-                          {...register('option', { required: true })}
-                        />
-                        Married
-                      </label>
-                    </div>
-                    <div>
-                      <label className="flex gap-2">
-                        <input
-                          type="radio"
-                          value="unmarried"
-                          {...register('option', { required: true })}
-                        />
-                        Un Married
-                      </label>
-                    </div>
-                    <div>
-                    </div>
+                  <div className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary flex gap-5">
+                    {maritalStatus.map((option) => (
+                      <div key={option.appLOVID}>
+                        <label className="flex gap-2">
+                          <input
+                            type="radio"
+                            value={option.code}
+                            {...register('patientMaritalStatus', {
+                              required: true,
+                            })}
+                          />
+                          {option.name}
+                        </label>
+                      </div>
+                    ))}
                   </div>
-                  {errors.option && <p className="text-sm text-red-800 mt-1 text-right">Maritial Status is required</p>}
+                  {errors.patientMaritalStatus && (
+                    <p className="text-sm text-red-800 mt-1 text-right">
+                      Maritial Status is required
+                    </p>
+                  )}
                 </div>
                 <div className="mb-4">
-                  <select className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary' {...register("bloodGroupID", { required: true })}>
-                    <option value="">Bloog Group</option>
-                    <option value="female">O+</option>
-                    <option value="male">B+</option>
-                    <option value="other">AB+</option>
+                  <select
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    {...register('bloodGroupID', { required: true })}
+                  >
+                    <option value="">Select Patient Blood Group</option>
+                    {bloodGroup.map((option) => (
+                      <option key={option.appLOVID} value={option.code}>
+                        {' '}
+                        {option.name}
+                      </option>
+                    ))}
                   </select>
-                  {errors.bloodGroupID && <p className="text-sm text-red-800 mt-1 text-right">Patient Bloog Group is required.</p>}
+                  {errors.bloodGroupID && (
+                    <p className="text-sm text-red-800 mt-1 text-right">
+                      Patient Bloog Group is required.
+                    </p>
+                  )}
                 </div>
                 <div className="mb-4">
-                  <select className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary' {...register("insuranceProvider")}>
-                    <option value="">Insurance provider</option>
+                  <select
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    {...register('insuranceProvider')}
+                  >
+                    <option value="">Select Insurance provider</option>
                     <option value="female">LIC</option>
                     <option value="male">Care</option>
                     <option value="other">STAR Health</option>
                   </select>
-                  {errors.insuranceProvider && <p className="text-sm text-red-800 mt-1 text-right">Patient insurance provider is required.</p>}
+                  {errors.insuranceProvider && (
+                    <p className="text-sm text-red-800 mt-1 text-right">
+                      Patient insurance provider is required.
+                    </p>
+                  )}
                 </div>
                 <div className="mb-4">
-                  <input placeholder='Insurance Policy Number' className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary' {...register('insurancePolicyNumber')} />
-                  {errors.insurancePolicyNumber && <p className="text-sm text-red-800 mt-1 text-right">Insurance Policy Number is required.</p>}
+                  <input
+                    placeholder="Insurance Policy Number"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    {...register('insurancePolicyNumber')}
+                  />
+                  {errors.insurancePolicyNumber && (
+                    <p className="text-sm text-red-800 mt-1 text-right">
+                      Insurance Policy Number is required.
+                    </p>
+                  )}
                 </div>
-                <input className="bg-gradient-to-b from-[#004A99] to-[#007BFF] hover:from-[#007BFF] hover:to-[#004A99] text-white transition duration-150 ease-out hover:ease-in rounded px-5 py-2 mt-2 w-fit text-center" type="submit" />
+                <input type="hidden" name="createdBy" value="self" />
+                <input
+                  className="bg-gradient-to-b from-[#004A99] to-[#007BFF] hover:from-[#007BFF] hover:to-[#004A99] text-white transition duration-150 ease-out hover:ease-in rounded px-5 py-2 mt-2 w-fit text-center"
+                  type="submit" disabled={isSubmitting} 
+                />
               </form>
+              {message && (
+                <div
+                  className={`mt-4 p-3 rounded ${
+                    message.includes('Error')
+                      ? 'bg-red-200 text-red-800'
+                      : 'bg-green-200 text-green-800'
+                  }`}
+                >
+                  {message}
+                </div>
+              )}
             </div>
           </div>
         </div>
