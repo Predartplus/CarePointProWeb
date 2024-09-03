@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import LogoIcon from '../images/carepointpro/main__logo.png';
 import '../scss/landingpage.scss';
 import Login from './components/Login'; // Adjust the path if needed
+import Auth from '../js/auth';
+
 const LandingPageLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div>
@@ -84,7 +86,7 @@ const LandingPageLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                         </a>
                       </li>
                       <li>
-                        <Link className="bg-gradient-to-b from-[#004A99] to-[#007BFF] hover:from-[#007BFF] hover:to-[#004A99] text-white transition duration-150 ease-out hover:ease-in py-2 px-4 rounded-lg" to="/signin">Login</Link>
+                        <Auth />
                       </li>
                     </ul>
                   </div>

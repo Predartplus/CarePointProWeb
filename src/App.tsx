@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
@@ -10,7 +10,7 @@ import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/Dashboard';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
-import Profile from './pages/Profile';
+
 import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
@@ -20,10 +20,17 @@ import DefaultLayout from './layout/DefaultLayout';
 import LandingPageLayout from './layout/LandingPageLayout';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard/Dashboard';
+import { useSelector } from 'react-redux';
+import Profile from './pages/Profile';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
+
+  const PrivateRoute = ({ children }) => {
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    return isAuthenticated ? children : <Navigate to="/signin" />;
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -65,12 +72,25 @@ function App() {
             </>
           }
         />
-        <Route
-          path="/dashboard"
+        <Route 
+          path="/dashboard" 
           element={
             <>
               <PageTitle title="Dashboard | CarePoint Pro" />
-              <Dashboard />
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            </>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <>
+              <PageTitle title="Profile | CarePoint Pro" />
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
             </>
           }
         />

@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../js/axiosInstance';
-
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../redux/actions/authActions';
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const [Username, setUsername] = useState('');
   const [Password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const dispatch = useDispatch();
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await axiosInstance.post('/Login', { Username, Password });
+      const response = await axiosInstance.post('/Login', {
+        Username,
+        Password,
+      });
       console.log('Login successful:', response.data);
+      const token = 'carePointProToken'; // Replace this with your token logic
+      dispatch(loginSuccess(token));
+      localStorage.setItem('authToken', token); // Store token in localStorage
       navigate('/dashboard');
       // Handle successful login, e.g., save token, redirect, etc.
     } catch (error) {
@@ -24,9 +32,9 @@ const SignIn: React.FC = () => {
 
   return (
     <>
-      <div className="container">
-        <div className="max-w-screen-xl mx-auto py-4">
-          <div className="bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="container">
+          <div className="max-w-screen-xl mx-auto py-4">
             <div className="flex flex-wrap items-center">
               <div className="hidden w-full xl:block xl:w-1/2">
                 <div className="py-17.5 px-26 text-center">
@@ -162,7 +170,9 @@ const SignIn: React.FC = () => {
 
               <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
                 <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-                  <span className="mb-1.5 block font-medium">Start for free</span>
+                  <span className="mb-1.5 block font-medium">
+                    Start for free
+                  </span>
                   <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                     Sign In to CarePoint Pro
                   </h2>
@@ -257,7 +267,7 @@ const SignIn: React.FC = () => {
               </div>
             </div>
           </div>
-      </div>
+        </div>
       </div>
     </>
   );
