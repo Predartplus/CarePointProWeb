@@ -4,6 +4,7 @@ import LogoIcon from '../images/carepointpro/main__logo.png';
 import '../scss/landingpage.scss';
 import Login from './components/Login'; // Adjust the path if needed
 import Auth from '../js/auth';
+import { Outlet } from 'react-router-dom';
 
 const LandingPageLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -94,7 +95,7 @@ const LandingPageLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
               </nav>
             </div>
           </header>
-          <main>{children}</main>
+          <main><Outlet /></main>
           <footer className="bg-[#deeeff]">
             <div className="container">
               <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
